@@ -93,7 +93,7 @@ def get_image_descriptor(image):
 
     img= io.imread(image)
     # print(img.shape)
-    img = rgb2gray(img)
+    # img = rgb2gray(img)
 
     dets = detector(img, 1)
     face_descriptors=[]
