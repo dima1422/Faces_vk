@@ -8,10 +8,12 @@ from Utils import Profiler
 
 
 with Profiler() as p:
+     #здесь загружаем фотку, лицо с которой будем искать по базе дескрипторов
      d  = get_image_descriptor("test1.jpg")[0]
-     print(len(d))
-     # exit()
 
+     print(len(d))
+
+     #здесь путь к файлу с дескрипторами
      df = pd.read_csv('dima_and_all.csv')
 
      desc_list= df.to_records(index=False)
