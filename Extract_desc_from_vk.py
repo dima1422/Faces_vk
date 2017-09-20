@@ -4,8 +4,9 @@ import time,vk, os
 from Utils import get_image_descriptor
 import urllib
 
-range1,range2= 50015000,50015015
-step= 5
+# range1,range2= 50025000,50030000
+range1,range2= 50030000,50036000
+step= 2000
 
 #получаем доступ к апишкам vk
 login = '79315783962'

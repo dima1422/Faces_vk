@@ -4,6 +4,9 @@ from skimage import io
 from skimage.color import rgb2gray
 import os
 import pickle
+import pandas as pd
+
+
 class Profiler(object):
     def __enter__(self):
         self._startTime = time.time()
@@ -90,7 +93,7 @@ def get_image_descriptor(image):
 
     img= io.imread(image)
     # print(img.shape)
-    # img = rgb2gray(img)
+    img = rgb2gray(img)
 
     dets = detector(img, 1)
     face_descriptors=[]
@@ -132,6 +135,28 @@ def add_descriptors(sourse_dir,filename='data.pickle', dest_dir=''):
 
     with open(filename, 'wb') as f:
         pickle.dump(d_list, f)
+
+
+def join_desc_files(imput_dir, output_file_name):
+
+    file_list = os.listdir(imput_dir)
+    files_count=0
+    df_list=[]
+    print(len(file_list))
+
+    for file_name in file_list:
+
+        path= imput_dir+"/"+file_name
+        print(path)
+        df = pd.read_csv(path, index_col=0)
+        df_list.append(df)
+        files_count+=1
+        print('Загружен файл {} {} строки'.format(file_name,df.shape[0]))
+
+
+    merged_df = pd.concat(df_list)
+    merged_df.to_csv(output_file_name, encoding='utf-8')
+    print('Объединено {} таблиц и {} строк. Сохранено в файле {}'.format(files_count,merged_df.shape[0],output_file_name))
 
 
 # def get_descriptors_from_url(url, user_id):
