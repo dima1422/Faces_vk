@@ -5,7 +5,7 @@ from Utils import get_image_descriptor
 import urllib
 
 # range1,range2= 50025000,50030000
-range1,range2= 50030000,50036000
+range1,range2= 50036000,50040000
 step= 2000
 
 #получаем доступ к апишкам vk
@@ -15,15 +15,9 @@ vk_id = '6160258'
 # token='a1ff3d1d50e5cb1fc5e84b5781650d0e4d31cc698f7e817f69aa158b77705bd39c6f36c540cd01d314dff'
 session = vk.AuthSession(app_id=vk_id, user_login=login, user_password=password)
 vkapi = vk.API(session)
-
+from Utils import Profiler
 
 #класс для подсчета времени выполнения
-class Profiler(object):
-    def __enter__(self):
-        self._startTime = time.time()
-
-    def __exit__(self, type, value, traceback):
-        print("Elapsed time: {:.3f} sec".format(time.time() - self._startTime))
 
 #получение ссылки на фото максимального разрешения. Получает массив с размерами фоток и ссылками, возвращает ссылку
 #на фотку максимального размера
