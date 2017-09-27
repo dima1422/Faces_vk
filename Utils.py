@@ -94,6 +94,10 @@ def get_image_descriptor(image):
         img= io.imread(image)
     except Exception:
         print('ошибка')
+        print('не удалось загрузить фотографию')
+        return []
+
+
     # print(img.shape)
     # img = rgb2gray(img)
 
@@ -159,6 +163,52 @@ def join_desc_files(imput_dir, output_file_name):
     merged_df = pd.concat(df_list)
     merged_df.to_csv(output_file_name, encoding='utf-8')
     print('Объединено {} таблиц и {} строк. Сохранено в файле {}'.format(files_count,merged_df.shape[0],output_file_name))
+
+
+def extract_and_save_descriptors_from_images_to_csv(load_dir="data",file_csv_name='data.csv'):
+
+    sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+    facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
+    detector = dlib.get_frontal_face_detector()
+
+    file_list = os.listdir(load_dir)
+    faces_count=0
+    d_list=[]
+
+    columns = ['id', 'link', 'filename', 'face№']
+    for i in range(1, 129):
+        columns.append("parametr№" + str(i))
+
+    for file_name in file_list:
+        path= load_dir+"/"+file_name
+        img = io.imread(path)
+        dets = detector(img, 1)
+        if len(dets)== 0:
+            print("В файле {} не найдено лицо".format(file_name))
+            continue
+        f=0
+        for k, d in enumerate(dets):
+            # print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
+            #     k, d.left(), d.top(), d.right(), d.bottom()))
+            shape = sp(img, d)
+
+            print("Обработка файла {}".format(file_name))
+            face_descriptor = facerec.compute_face_descriptor(img, shape)
+            ar=list(face_descriptor)
+
+            ar.insert(0, f)
+            ar.insert(0, file_name.replace('.jpg',''))
+            ar.insert(0, "локальное фото")
+            ar.insert(0, "не соц. сеть")
+
+            d_list.append(ar)
+            faces_count+=1
+            f+=1
+
+    print("Получено {} файлов. Найдено {} изображений с лицами".format(len(file_list),faces_count))
+
+    df = pd.DataFrame.from_records(d_list, columns=columns)
+    df.to_csv(file_csv_name, encoding='utf-8')
 
 
 # def get_descriptors_from_url(url, user_id):
